@@ -1,13 +1,17 @@
 <?php
 /**
- * MagentoHackathon\Elasticsearch\Model\Indexer\IndexerHandler
+ * MagentoHackathon_Elasticsearch
+ * https://github.com/magento-hackathon/m2-elasticsearch
+ *
+ * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * Please see LICENSE.txt for the full text of the OSL 3.0 license or contact license@magentocommerce.com for a copy.
  */
 
 namespace MagentoHackathon\Elasticsearch\Model\Indexer;
 
 use Magento\Framework\Indexer\SaveHandler\IndexerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use MagentoHackathon\Elasticsearch\Model\AdapterInterface;
+use MagentoHackathon\Elasticsearch\Model\Adapter\AdapterInterface;
 use Magento\Framework\Indexer\SaveHandler\Batch;
 use Magento\Framework\Search\Request\Dimension;
 use Magento\Store\Model\ScopeInterface;

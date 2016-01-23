@@ -1,14 +1,18 @@
 <?php
 /**
- * MagentoHackathon\Elasticsearch\AdapterInterface\Model
+ * MagentoHackathon_Elasticsearch
+ * https://github.com/magento-hackathon/m2-elasticsearch
+ *
+ * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * Please see LICENSE.txt for the full text of the OSL 3.0 license or contact license@magentocommerce.com for a copy.
  */
 
-namespace MagentoHackathon\Elasticsearch\Model;
+namespace MagentoHackathon\Elasticsearch\Model\Adapter;
 
 /**
- * @category   Interface
+ * @category   Adapter
  * @package    MagentoHackathon_Elasticsearch
- * @subpackage AdapterInterface
+ * @subpackage Interface
  * @version    1.0.0
  * @link       https://github.com/magento-hackathon/m2-elasticsearch
  * @author     Vadim Justus <v.justus@techdivision.com>
