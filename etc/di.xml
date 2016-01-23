@@ -15,16 +15,15 @@
     </type>
     <type name="Magento\CatalogSearch\Model\Indexer\IndexerHandlerFactory">
         <arguments>
-            <argument name="configPath" xsi:type="const">Magento\CatalogSearch\Model\ResourceModel\EngineInterface::CONFIG_ENGINE_PATH</argument>
             <argument name="handlers" xsi:type="array">
-                <item name="mysql" xsi:type="string">Magento\CatalogSearch\Model\Indexer\IndexerHandler</item>
+                <item name="elastic" xsi:type="string">Magento\CatalogSearch\Model\Indexer\IndexerHandler</item>
             </argument>
         </arguments>
     </type>
     <type name="Magento\CatalogSearch\Model\ResourceModel\EngineProvider">
         <arguments>
             <argument name="engines" xsi:type="array">
-                <item name="elastic" xsi:type="string">Magento\CatalogSearch\Model\ResourceModel\Engine</item>
+                <item name="elastic" xsi:type="string">MagentoHackathon\Elasticsearch\Model\ResourceModel\Engine</item>
             </argument>
         </arguments>
     </type>
