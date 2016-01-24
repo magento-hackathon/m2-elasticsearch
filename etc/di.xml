@@ -16,8 +16,16 @@
             </argument>
         </arguments>
     </type>
-    <preference for="MagentoHackathon\Elasticsearch\Model\Client\FactoryInterface" type="MagentoHackathon\Elasticsearch\Model\Client\ElasticFactory" />
+
     <preference for="MagentoHackathon\Elasticsearch\Model\Adapter\AdapterInterface" type="MagentoHackathon\Elasticsearch\Model\Adapter\Elastica" />
+    <preference for="MagentoHackathon\Elasticsearch\Model\Client\FactoryInterface" type="MagentoHackathon\Elasticsearch\Model\Client\Factory" />
+    <type name="MagentoHackathon\Elasticsearch\Model\Client\FactoryInterface">
+        <arguments>
+            <argument name="clientClass" xsi:type="string">MagentoHackathon\Elasticsearch\Model\Client\Elastica</argument>
+        </arguments>
+    </type>
+    <preference for="MagentoHackathon\Elasticsearch\Model\Client\Elastica\ConfigurationInterface" type="MagentoHackathon\Elasticsearch\Model\Client\Elastica\Configuration" />
+
     <type name="Magento\Search\Model\Adminhtml\System\Config\Source\Engine">
         <arguments>
             <argument name="engines" xsi:type="array">

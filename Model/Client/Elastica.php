@@ -7,6 +7,7 @@
  * Please see LICENSE.txt for the full text of the OSL 3.0 license or contact license@magentocommerce.com for a copy.
  */
 namespace MagentoHackathon\Elasticsearch\Model\Client;
+use MagentoHackathon\Elasticsearch\Model\Client\Elastica\ConfigurationInterface;
 
 /**
  * @category   Client
@@ -17,65 +18,72 @@ namespace MagentoHackathon\Elasticsearch\Model\Client;
  * @author     Harald Deiser <h.deiser@techdivision.com>
  * @author     Lars Roettig <l.roettig@techdivision.com>
  */
-class Elastic extends \Elastica\Client
+class Elastica extends \Elastica\Client
 {
     /**
      * The elasticsearch export index
      *
      * @var \Elastica\Index Index object.
      */
-    protected $_index;
+    protected $index;
+
+    /**
+     * The elasticsearch parent index
+     *
+     * @var \Elastica\Index Index object.
+     */
+    protected $parentIndex;
 
     /**
      * @var \Elastica\Document
      */
-    protected $_document;
+    protected $document;
 
     /**
      * The elasticsearch export index
      *
      * @var \Elastica\Type $type Type object
      */
-    protected $_type;
+    protected $type;
 
     /**
      * @var string
      */
-    protected $_indexName = '';
+    protected $indexName = '';
 
     /**
      * @var string
      */
-    protected $_aliasName = '';
+    protected $aliasName = '';
 
     /**
-     * @var \MagentoHackathon\Elasticsearch\Helper\ElasticOptionInterface
+     * @var ConfigurationInterface
      */
-    protected $_configHelper;
+    protected $configuration;
 
-    public function __construct(
-        \MagentoHackathon\Elasticsearch\Helper\ElasticOptionInterface $option,
-        array $config = array(),
-        $callback = null)
+    /**
+     * @param ConfigurationInterface $configuration
+     */
+    public function __construct(ConfigurationInterface $configuration)
     {
-        $this->_configHelper = $option;
-        parent::__construct($config, $callback);
+        $this->configuration = $configuration;
+        parent::__construct($this->configuration->getConfigArray(), $this->configuration->getClientCallback());
     }
     /**
-     * Get the current elasticsearch export index
+     * Get the current elastic export index
      *
-     * @param string $elasticsearchIndex
+     * @param string $elasticIndexName
      *
-     * @return \Elastica\Index|void
+     * @return \Elastica\Index
      */
-    public function getIndex($elasticsearchIndex)
+    public function getIndex($elasticIndexName)
     {
-        if ($this->_index != null) {
-            return $this->_index;
+        if ($this->index != null) {
+            return $this->index;
         }
 
-        $settings = $this->_configHelper->getSearchSettings();
-        $format = $this->_configHelper->getAdvancedNewIndexDateFormat();
+        $settings = $this->configuration->getSearchSettings();
+        $format = $this->configuration->getAdvancedNewIndexDateFormat();
         $date = '';
         if (!empty($format)) {
             $date = date($format);
@@ -83,20 +91,20 @@ class Elastic extends \Elastica\Client
 
         $md5 = md5(serialize($settings) . $date);
 
-        $this->_aliasName = $elasticsearchIndex;
-        $this->_indexName = $elasticsearchIndex . '_' . $md5;
+        $this->aliasName = $elasticIndexName;
+        $this->indexName = $elasticIndexName . '_' . $md5;
 
-        $this->_index = $this->_getParentIndex($this->_aliasName);
+        $this->index = $this->getParentIndex($this->aliasName);
 
-        if (!$this->_index->exists() || $this->_index->getName() != $this->_indexName) {
-            $this->_index = $this->_getParentIndex($this->_indexName);
+        if (!$this->index->exists() || $this->index->getName() != $this->indexName) {
+            $this->index = $this->getParentIndex($this->indexName);
 
-            if (!$this->_index->exists()) {
-                $this->_index->create($settings, false);
+            if (!$this->index->exists()) {
+                $this->index->create($settings, false);
             }
         }
 
-        return $this->_index;
+        return $this->index;
     }
 
     /**
@@ -109,13 +117,13 @@ class Elastic extends \Elastica\Client
      */
     public function getType($type, $createNew = false)
     {
-        $this->_type = $this->_index->getType($type);
+        $this->_type = $this->index->getType($type);
 
-        if ($createNew == true && $this->_type->exists() == true) {
-            $this->_type->delete();
+        if ($createNew == true && $this->type->exists() == true) {
+            $this->type->delete();
         }
 
-        return $this->_type;
+        return $this->type;
     }
 
     /**
@@ -132,8 +140,8 @@ class Elastic extends \Elastica\Client
      */
     public function createNewDocument($id = '', $data = array(), $type = '', $index = '')
     {
-        if (!is_null($this->_document)) {
-            return $this->_document;
+        if (!is_null($this->document)) {
+            return $this->document;
         }
         return new \Elastica\Document($id, $data, $type, $index);
     }
@@ -142,18 +150,18 @@ class Elastic extends \Elastica\Client
      * This method wrapps the parent method call only.
      * Needed for testing.
      *
-     * @param string $elasticsearchIndex
+     * @param string $elasticIndexName
      *
      * @return \Elastica\Index
      */
-    private function _getParentIndex($elasticsearchIndex)
+    private function getParentIndex($elasticIndexName)
     {
-        if (!is_null($this->_parentIndex)) {
-            return $this->_parentIndex;
+        if (!is_null($this->parentIndex)) {
+            return $this->parentIndex;
         }
 
         // @codeCoverageIgnoreStart
-        return parent::getIndex($elasticsearchIndex);
+        return parent::getIndex($elasticIndexName);
         // @codeCoverageIgnoreEnd
     }
 
@@ -177,7 +185,7 @@ class Elastic extends \Elastica\Client
     }
 
     /**
-     * Get elastica document with "is_delete" flag is true
+     * Get elastic document with "is_delete" flag is true
      *
      * @param $productId
      *
@@ -192,7 +200,7 @@ class Elastic extends \Elastica\Client
     }
 
     /**
-     * Get elastica document with "is_delete" flag is true
+     * Get elastic document with "is_delete" flag is true
      *
      * @param       $productId
      * @param array $productValue
@@ -246,8 +254,8 @@ class Elastic extends \Elastica\Client
     {
         foreach ($productIds as $productId) {
             try {
-                $this->_type->deleteById($productId);
-            } catch (Exception $e) {
+                $this->type->deleteById($productId);
+            } catch (\Exception $e) {
                 //continue if $productId not found
                 //TODO Logging
                 continue;
@@ -262,7 +270,7 @@ class Elastic extends \Elastica\Client
      */
     public function deleteIndex($indexName)
     {
-        $index = $this->_getParentIndex($indexName);
+        $index = $this->getParentIndex($indexName);
         return $index->delete();
     }
 
@@ -274,10 +282,10 @@ class Elastic extends \Elastica\Client
      */
     public function changeAlias($indexName, $aliasName)
     {
-        $index = $this->_getParentIndex($indexName);
+        $index = $this->getParentIndex($indexName);
 
         try {
-            $aliasIndex = $this->_getParentIndex($aliasName);
+            $aliasIndex = $this->getParentIndex($aliasName);
             $aliasIndex->removeAlias($aliasName);
         } catch (\RuntimeException $exception) {
             //TODO Logging

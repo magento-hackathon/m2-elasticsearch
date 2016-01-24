@@ -9,7 +9,6 @@
 namespace MagentoHackathon\Elasticsearch\Model\Adapter;
 
 use Magento\Framework\Exception\LocalizedException;
-use MagentoHackathon\Elasticsearch\Helper\ClientOptionsInterface;
 use MagentoHackathon\Elasticsearch\Model\Client\FactoryInterface;
 use MagentoHackathon\Elasticsearch\Model\Adapter\AdapterInterface;
 use MagentoHackathon\Elasticsearch\Model\ResourceModel\Index;
@@ -41,23 +40,13 @@ class Elastica implements AdapterInterface
     private $clientFactory;
 
     /**
-     * @var ClientOptionsInterface
-     */
-    private $clientHelper;
-
-    /**
      * @param FactoryInterface $clientFactory
-     * @param ClientOptionsInterface $clientHelper
      * @param array $options
      * @throws LocalizedException
      */
-    public function __construct(
-        FactoryInterface $clientFactory,
-        ClientOptionsInterface $clientHelper,
-        $options = []
-    ) {
+    public function __construct(FactoryInterface $clientFactory, $options = [])
+    {
         $this->clientFactory = $clientFactory;
-        $this->clientHelper = $clientHelper;
 
         try {
             $this->connect($options);
@@ -79,13 +68,22 @@ class Elastica implements AdapterInterface
     protected function connect($options = [])
     {
         try {
-            $this->client = $this->clientFactory->create($this->clientHelper->prepareClientOptions($options));
+            $this->client = $this->clientFactory->create($this->prepareClientOptions($options));
         } catch (\Exception $e) {
             //TODO Logging
             throw new \RuntimeException('Elasticsearch client is missing.');
         }
 
         return $this->client;
+    }
+
+    /**
+     * @param array $options
+     * @return array
+     */
+    private function prepareClientOptions(array $options)
+    {
+        return $options;
     }
 
     /**
