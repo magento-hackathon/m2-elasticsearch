@@ -1,13 +1,23 @@
 <?php
-
+/**
+ * MagentoHackathon_Elasticsearch
+ * https://github.com/magento-hackathon/m2-elasticsearch
+ *
+ * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * Please see LICENSE.txt for the full text of the OSL 3.0 license or contact license@magentocommerce.com for a copy.
+ */
 namespace MagentoHackathon\Elasticsearch\Model\ResourceModel;
 
 use Magento\CatalogSearch\Model\ResourceModel\EngineInterface;
 
 /**
- * Search engine resource model
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @category   Client
+ * @package    MagentoHackathon_Elasticsearch
+ * @subpackage Interface
+ * @version    1.0.0
+ * @link       https://github.com/magento-hackathon/m2-elasticsearch
+ * @author     Harald Deiser <h.deiser@techdivision.com>
+ * @author     Lars Roettig <l.roettig@techdivision.com>
  */
 class Engine implements EngineInterface
 {
@@ -67,7 +77,7 @@ class Engine implements EngineInterface
     /**
      * @inheritdoc
      */
-    public function processAttributeValue($attribute, $value)
+    public function processAttributeValue($attribute = '', $value = '')
     {
         return $value;
     }

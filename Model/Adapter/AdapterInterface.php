@@ -24,7 +24,7 @@ interface AdapterInterface
      * @param array $dimensions
      * @return array
      */
-    public function prepareDataForBulkUpdate(\Traversable $documents, $dimensions);
+    public function prepareDataForBulkUpdate(\Traversable $documents, $dimensions, $type = 'product');
 
     /**
      * @param array $data
@@ -37,7 +37,7 @@ interface AdapterInterface
      * @param array $dimensions
      * @return array
      */
-    public function prepareDataForBulkDelete(\Traversable $documents, $dimensions);
+    public function prepareDataForBulkDelete(\Traversable $documents, $dimensions, $type = 'product');
 
     /**
      * @param array $data
