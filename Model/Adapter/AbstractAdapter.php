@@ -19,18 +19,14 @@ use MagentoHackathon\Elasticsearch\Model\ResourceModel\Index;
  * @package    MagentoHackathon_Elasticsearch
  * @version    1.0.0
  * @link       https://github.com/magento-hackathon/m2-elasticsearch
+ * @TODO how to get Index name?
  */
 abstract class AbstractAdapter implements AdapterInterface
 {
     /**
-     * @var Index
-     */
-    protected $resourceIndex;
-
-    /**
-     * Store Solr Client instance
+     * Elasticsearch Client instance
      *
-     * @var object
+     * @var \MagentoHackathon\Elasticsearch\Model\Client\Elastic
      */
     protected $client = null;
 
@@ -50,21 +46,18 @@ abstract class AbstractAdapter implements AdapterInterface
     private $clientHelper;
 
     /**
-     * @param Index $resourceIndex
      * @param FactoryInterface $clientFactory
      * @param ClientOptionsInterface $clientHelper
      * @param array $options
      * @throws LocalizedException
      */
     public function __construct(
-        Index $resourceIndex,
         FactoryInterface $clientFactory,
         ClientOptionsInterface $clientHelper,
         $options = []
     ) {
         $this->clientFactory = $clientFactory;
         $this->clientHelper = $clientHelper;
-        $this->resourceIndex = $resourceIndex;
 
         try {
             $this->connect($options);
@@ -81,7 +74,7 @@ abstract class AbstractAdapter implements AdapterInterface
      * Should initialize _client
      *
      * @param array $options
-     * @return \Magento\Solr\Model\Client\Solarium
+     * @return \MagentoHackathon\Elasticsearch\Model\Client\Elastic
      */
     protected function connect($options = [])
     {
@@ -100,9 +93,21 @@ abstract class AbstractAdapter implements AdapterInterface
      * @param array $dimensions
      * @return array
      */
-    public function prepareDataForBulkUpdate(\Traversable $documents, $dimensions)
+    public function prepareDataForBulkUpdate(\Traversable $documents, $dimensions, $type = 'product')
     {
-        // TODO: Implement prepareDataForBulkUpdate() method.
+        $result = array();
+        switch($type){
+            case 'product':
+                foreach($documents as $doc){
+                    //TODO how to get key and value from doc (whats in documents)
+                    $result[] = $this->client->getProductUpdateDocument($doc->getKey(), $doc->getValue());
+                }
+                break;
+            case 'category':
+                break;
+            default:
+                //TODO Error 'Undefined Bulk Data
+        }
     }
 
     /**
@@ -121,9 +126,21 @@ abstract class AbstractAdapter implements AdapterInterface
      * @param array $dimensions
      * @return array
      */
-    public function prepareDataForBulkDelete(\Traversable $documents, $dimensions)
+    public function prepareDataForBulkDelete(\Traversable $documents, $dimensions, $type = 'product')
     {
-        // TODO: Implement prepareDataForBulkDelete() method.
+        $result = array();
+        switch($type){
+            case 'product':
+                foreach($documents as $doc){
+                    //TODO how to get key and value from doc (whats in documents)
+                    $result[] = $this->client->getProductMarkDeleteDocument($doc->getKey(), $doc->getValue());
+                }
+                break;
+            case 'category':
+                break;
+            default:
+                //TODO Error 'Undefined Bulk Data
+        }
     }
 
     /**
@@ -143,7 +160,7 @@ abstract class AbstractAdapter implements AdapterInterface
      */
     public function deleteData(array $dimensions)
     {
-        // TODO: Implement deleteData() method.
+        $this->client->deleteIndex($this->client->getIndex($dimensions));
     }
 
     /**

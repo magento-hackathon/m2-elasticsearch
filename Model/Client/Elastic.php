@@ -49,6 +49,57 @@ class Elastic extends \Elastica\Client
     protected $_aliasName = '';
 
     /**
+     * @var \MagentoHackathon\Elasticsearch\Helper\ElasticOptionInterface
+     */
+    protected $_configHelper;
+
+    public function __construct(
+        \MagentoHackathon\Elasticsearch\Helper\ElasticOptionInterface $option,
+        array $config = array(),
+        $callback = null)
+    {
+        $this->_configHelper = $option;
+        parent::__construct($config, $callback);
+    }
+    /**
+     * Get the current elasticsearch export index
+     *
+     * @param string $elasticsearchIndex
+     *
+     * @return \Elastica\Index|void
+     */
+    public function getIndex($elasticsearchIndex)
+    {
+        if ($this->_index != null) {
+            return $this->_index;
+        }
+
+        $settings = $this->_configHelper->getSearchSettings();
+        $format = $this->_configHelper->getAdvancedNewIndexDateFormat();
+        $date = '';
+        if (!empty($format)) {
+            $date = date($format);
+        }
+
+        $md5 = md5(serialize($settings) . $date);
+
+        $this->_aliasName = $elasticsearchIndex;
+        $this->_indexName = $elasticsearchIndex . '_' . $md5;
+
+        $this->_index = $this->_getParentIndex($this->_aliasName);
+
+        if (!$this->_index->exists() || $this->_index->getName() != $this->_indexName) {
+            $this->_index = $this->_getParentIndex($this->_indexName);
+
+            if (!$this->_index->exists()) {
+                $this->_index->create($settings, false);
+            }
+        }
+
+        return $this->_index;
+    }
+
+    /**
      * Get the currentType
      *
      * @param      $type
