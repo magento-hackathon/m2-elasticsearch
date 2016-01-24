@@ -21,7 +21,7 @@ use MagentoHackathon\Elasticsearch\Model\ResourceModel\Index;
  * @link       https://github.com/magento-hackathon/m2-elasticsearch
  * @TODO how to get Index name?
  */
-abstract class AbstractAdapter implements AdapterInterface
+class Elastica implements AdapterInterface
 {
     /**
      * Elasticsearch Client instance

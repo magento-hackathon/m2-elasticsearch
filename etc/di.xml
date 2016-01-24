@@ -17,6 +17,7 @@
         </arguments>
     </type>
     <preference for="MagentoHackathon\Elasticsearch\Model\Client\FactoryInterface" type="MagentoHackathon\Elasticsearch\Model\Client\ElasticFactory" />
+    <preference for="MagentoHackathon\Elasticsearch\Model\Adapter\AdapterInterface" type="MagentoHackathon\Elasticsearch\Model\Adapter\Elastica" />
     <type name="Magento\Search\Model\Adminhtml\System\Config\Source\Engine">
         <arguments>
             <argument name="engines" xsi:type="array">
