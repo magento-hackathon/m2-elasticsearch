@@ -1,8 +1,8 @@
 {
   "name": "hackathon/m2-elasticsearch",
-  "description": "Add elasticsearch engine to magento2.",
+  "description": "Add elasticsearch engine to magento2. (Currently not finished.)",
   "type": "magento2-module",
-  "version": "0.0.1-alpha",
+  "version": "0.0.1-dev",
   "license": [
     "OSL-3.0",
     "AFL-3.0"
